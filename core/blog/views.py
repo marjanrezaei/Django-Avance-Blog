@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, ListView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView
 from .models import Post
 
 # Create your views here.
@@ -50,3 +50,6 @@ class PostList(ListView):
     # def get_queryset(self):
     #     posts = Post.objects.filter(status=True)
     #     return posts
+    
+class PostDetailView(DetailView):
+    model = Post
