@@ -11,6 +11,7 @@ urlpatterns = [
     path('cbv-index',views.IndexView.as_view(), name = 'cbv-index'),
     # path('go-to-index', RedirectView.as_view(pattern_name="blog:cbv-index"), name='redirect-to-index')
     path('go-to-google', views.RedirectToGoogle.as_view(), name='redirect-to-google'),
-    path('post/', views.PostList.as_view(), name="post-list")
+    path('post/', views.PostListView.as_view(), name="post-list"),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name="post-detail"),
 
 ]

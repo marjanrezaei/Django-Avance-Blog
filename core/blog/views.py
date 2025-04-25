@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, ListView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView
 from .models import Post
 
 # Create your views here.
@@ -40,7 +40,7 @@ class RedirectToGoogle(RedirectView):
     '''
     url = "https://www.google.com"
     
-class PostList(ListView):
+class PostListView(ListView):
     model = Post
     # queryset = Post.objects.all()
     context_object_name = 'posts'
@@ -50,3 +50,6 @@ class PostList(ListView):
     # def get_queryset(self):
     #     posts = Post.objects.filter(status=True)
     #     return posts
+    
+class PostDetailView(DetailView):
+    model = Post
