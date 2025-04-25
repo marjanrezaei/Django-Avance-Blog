@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
-from django.views.generic import TemplateView
-from django.views.generic.base import RedirectView
+from django.views.generic import TemplateView, RedirectView
+
 
 app_name = "blog"
 
@@ -11,5 +11,6 @@ urlpatterns = [
     path('cbv-index',views.IndexView.as_view(), name = 'cbv-index'),
     # path('go-to-index', RedirectView.as_view(pattern_name="blog:cbv-index"), name='redirect-to-index')
     path('go-to-google', views.RedirectToGoogle.as_view(), name='redirect-to-google'),
+    path('post/', views.PostList.as_view(), name="post-list")
 
 ]

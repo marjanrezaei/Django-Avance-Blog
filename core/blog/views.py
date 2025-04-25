@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, ListView
 from .models import Post
 
 # Create your views here.
@@ -39,3 +39,6 @@ class RedirectToGoogle(RedirectView):
     a class based view to redirect to google
     '''
     url = "https://www.google.com"
+    
+class PostList(ListView):
+    model = Post
