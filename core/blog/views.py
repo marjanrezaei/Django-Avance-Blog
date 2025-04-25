@@ -41,10 +41,12 @@ class RedirectToGoogle(RedirectView):
     url = "https://www.google.com"
     
 class PostList(ListView):
-    # model = Post
+    model = Post
     # queryset = Post.objects.all()
     context_object_name = 'posts'
     paginate_by = 2
-    def get_queryset(self):
-        posts = Post.objects.filter(status=True)
-        return posts
+    ordering = '-id'
+    
+    # def get_queryset(self):
+    #     posts = Post.objects.filter(status=True)
+    #     return posts
