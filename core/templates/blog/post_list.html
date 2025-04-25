@@ -6,10 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>blog posts</h1>
-    {{object_list}}
-    
-    {% for post in object_list %}
+    <h1>my blog</h1>
+
+    {% for post in posts %}
     <div>
         <h2>{{post.title}}</h2>
         <h1>{{post.content}}</h1>

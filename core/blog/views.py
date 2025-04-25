@@ -42,3 +42,4 @@ class RedirectToGoogle(RedirectView):
     
 class PostList(ListView):
     model = Post
+    context_object_name = 'posts'
