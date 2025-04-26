@@ -55,7 +55,7 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     model = Post
     
-class postCreateView(FormView):
+class PostCreateView(FormView):
     template_name = 'contact.html'
     form_class = PostForm
     success_url = '/blog/post/'
