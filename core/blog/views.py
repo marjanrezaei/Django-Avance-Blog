@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, ListView, DetailView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView, FormView
 from .models import Post
+from .form import PostForm
 
 # Create your views here.
 # function based view for template 
@@ -53,3 +54,12 @@ class PostListView(ListView):
     
 class PostDetailView(DetailView):
     model = Post
+    
+class postCreateView(FormView):
+    template_name = 'contact.html'
+    form_class = PostForm
+    success_url = '/blog/post/'
+    
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
