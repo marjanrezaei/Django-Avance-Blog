@@ -17,6 +17,7 @@
        <a href="{% url 'blog:post-delete' pk=post.id %}">
         <h5>Delete</h5>
        </a>
+       <small>{{ post.author.first_name }}</small>
         <h1>{{post.content}}</h1>
     </div>
     {% endfor %}
