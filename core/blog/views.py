@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 from .models import Post
 from .form import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 # function based view for template 
@@ -41,7 +42,7 @@ class RedirectToGoogle(RedirectView):
     '''
     url = "https://www.google.com"
     
-class PostListView(ListView):
+class PostListView(LoginRequiredMixin, ListView):
     model = Post
     # queryset = Post.objects.all()
     context_object_name = 'posts'
@@ -52,7 +53,7 @@ class PostListView(ListView):
     #     posts = Post.objects.filter(status=True)
     #     return posts
     
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     
 '''class PostCreateView(FormView):
@@ -64,7 +65,7 @@ class PostDetailView(DetailView):
         form.save()
         return super().form_valid(form)'''
         
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     # fields = ['author', 'title', 'content', 'status', 'category', 'published_at']
     form_class = PostForm
@@ -75,12 +76,12 @@ class PostCreateView(CreateView):
         return super().form_valid(form)
     
     
-class PostEditView(UpdateView):
+class PostEditView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     success_url = '/blog/post/'
     
     
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/blog/post/'
