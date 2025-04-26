@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView, FormView, CreateView
 from .models import Post
 from .form import PostForm
 
@@ -55,11 +55,17 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     model = Post
     
-class PostCreateView(FormView):
+'''class PostCreateView(FormView):
     template_name = 'contact.html'
     form_class = PostForm
     success_url = '/blog/post/'
     
     def form_valid(self, form):
         form.save()
-        return super().form_valid(form)
+        return super().form_valid(form)'''
+        
+class PostCreateView(CreateView):
+    model = Post
+    # fields = ['author', 'title', 'content', 'status', 'category', 'published_at']
+    form_class = PostForm
+    success_url = '/blog/post/'
