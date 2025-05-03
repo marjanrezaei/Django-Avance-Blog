@@ -3,8 +3,7 @@ from django.views.generic import TemplateView, RedirectView, ListView, DetailVie
 from .models import Post
 from .form import PostForm
 from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+
 
 # Create your views here.
 # function based view for template 
@@ -89,7 +88,3 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/blog/post/'
 
-
-@api_view()
-def api_post_list_view(request):
-    return Response('ok')
