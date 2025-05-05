@@ -5,6 +5,8 @@ from .serializers import PostSerializer
 from ...models import Post
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
+from rest_framework import mixins
 
 
 '''
@@ -42,6 +44,7 @@ def postDetail(request, id):
 '''
         
     
+'''
 class PostList(APIView):
     """getting a list of posts and creating new posts"""
     permission_classes = [IsAuthenticated] 
@@ -58,8 +61,21 @@ class PostList(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+'''
     
+class PostList(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    """getting a list of posts and creating new posts"""
+    permission_classes = [IsAuthenticated] 
+    serializer_class = PostSerializer # show html form for create new post
+    queryset = Post.objects.filter(status=True)
+    def get(self, request, *args, **kwargs):
+        """Retrieving a list of posts """
+        return self.list(request, *args, **kwargs)
     
+    def post(self, request, *args, **kwargs):
+        """creating a post with provided data"""
+        return self.create(request, *args, **kwargs)
+
 
 class PostDetail(APIView):
     """ Getting detail of the post and edit plus removing it. """
