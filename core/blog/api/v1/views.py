@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 
 '''
-@api_view(['GET','POST'])
+ @api_view(['GET','POST'])
 @permission_classes([IsAuthenticated])
 def postList(request):
     if request.method == 'GET':
@@ -25,7 +25,8 @@ def postList(request):
     
 class PostList(APIView):
     """getting a list of posts and creating new posts"""
-    
+    permission_classes = [IsAuthenticated] 
+    serializer_class = PostSerializer # show html form for create new post
     def get(self, request):
         """Retrieving a list of posts """
         posts = Post.objects.filter(status=True)
