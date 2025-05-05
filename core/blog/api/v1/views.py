@@ -5,9 +5,8 @@ from .serializers import PostSerializer
 from ...models import Post
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework import mixins
-
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import mixins, viewsets
 
 '''
 from rest_framework.decorators import api_view, permission_classes
@@ -103,4 +102,33 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
     
-        
+
+# Example for viewsets in CBV
+
+class PostViewset(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated] 
+    serializer_class = PostSerializer 
+    queryset = Post.objects.filter(status=True)
+    
+    def list(self, request):
+        """Retrieving a list of posts """
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self, request, pk=None):
+        """ Retrieving the post data """
+        post = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(post)
+        return Response(serializer.data)
+
+    def create(self, request):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
