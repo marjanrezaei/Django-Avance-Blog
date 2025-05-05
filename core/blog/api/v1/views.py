@@ -5,7 +5,7 @@ from .serializers import PostSerializer
 from ...models import Post
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView, ListCreateAPIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import mixins
 
 
@@ -97,21 +97,10 @@ class PostDetail(APIView):
 '''
 
 
-class PostDetail(GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+class PostDetail(RetrieveUpdateDestroyAPIView):
     """ Getting detail of the post and edit plus removing it. """
     permission_classes = [IsAuthenticated] 
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
     
-    def get(self, request, *args, **kwargs):
-        """ Retrieving the post data """
-        return self.retrieve(request, *args, **kwargs)
-    
-    def put(self, request, *args, **kwargs):
-        """ Editing the post data """
-        return self.update(request, *args, **kwargs)
-    
-    def delete(self, request, *args, **kwargs):
-        """ deleting the post object """
-        return self.destroy(request, *args, **kwargs)
         
