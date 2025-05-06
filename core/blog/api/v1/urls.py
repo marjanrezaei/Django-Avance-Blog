@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 app_name = "api-v1"
 
 router = DefaultRouter()
-router.register('post', views.PostViewset, basename='post')
+router.register('post', views.PostModelViewset, basename='post')
 urlpatterns = router.urls
 
 
