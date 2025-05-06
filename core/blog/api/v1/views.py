@@ -1,5 +1,5 @@
 
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
@@ -62,11 +62,11 @@ class PostList(APIView):
         return Response(serializer.data)
 '''
     
-class PostList(ListCreateAPIView):
-    """getting a list of posts and creating new posts"""
-    permission_classes = [IsAuthenticated] 
-    serializer_class = PostSerializer # show html form for create new post
-    queryset = Post.objects.filter(status=True)
+# class PostList(ListCreateAPIView):
+#     """getting a list of posts and creating new posts"""
+#     permission_classes = [IsAuthenticated] 
+#     serializer_class = PostSerializer # show html form for create new post
+#     queryset = Post.objects.filter(status=True)
 
 '''
 class PostDetail(APIView):
@@ -96,23 +96,23 @@ class PostDetail(APIView):
 '''
 
 
-class PostDetail(RetrieveUpdateDestroyAPIView):
-    """ Getting detail of the post and edit plus removing it. """
-    permission_classes = [IsAuthenticated] 
-    serializer_class = PostSerializer
-    queryset = Post.objects.filter(status=True)
+# class PostDetail(RetrieveUpdateDestroyAPIView):
+#     """ Getting detail of the post and edit plus removing it. """
+#     permission_classes = [IsAuthenticated] 
+#     serializer_class = PostSerializer
+#     queryset = Post.objects.filter(status=True)
     
 
 # Example for viewsets in CBV
 
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticatedOrReadOnly] 
     serializer_class = PostSerializer 
     queryset = Post.objects.filter(status=True)
    
    
 class CategoryModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticatedOrReadOnly] 
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     
