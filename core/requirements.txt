@@ -3,3 +3,4 @@ python-decouple==3.8
 pillow
 djangorestframework
 python-decouple
+django-filter
