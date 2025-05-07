@@ -31,9 +31,12 @@ class PostSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         request = self.context.get('request') 
         rep = super().to_representation(instance)
-        rep['state']= 'list'
         if request.parser_context.get('kwargs').get('pk'):
-            rep['state']='single'
+            rep.pop('snippet', None)
+            rep.pop('relative_url', None)
+            rep.pop('absolute_url', None)
+        else:
+            rep.pop('content', None)
        
         rep['category'] = CategorySerializer(instance.category).data 
         return rep
