@@ -17,9 +17,6 @@ class PostSerializer(serializers.ModelSerializer):
     snippet = serializers.ReadOnlyField(source='get_snippet')
     relative_url = serializers.URLField(source='get_absolute_api_url', read_only=True)
     absolute_url = serializers.SerializerMethodField()
-    # category = serializers.SlugRelatedField(many=False, slug_field = 'name', queryset= Category.objects.all())
-    category = CategorySerializer()
-    
     
     class Meta:
         model = Post
@@ -31,3 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(reverse('blog:api-v1:post-detail', kwargs={'pk': obj.pk}))
         return reverse('blog:api-v1:post-detail', kwargs={'pk': obj.pk})
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['category'] = CategorySerializer(instance.category).data
+        return rep
