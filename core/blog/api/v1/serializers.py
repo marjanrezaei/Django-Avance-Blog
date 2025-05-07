@@ -20,7 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'author', 'title', 'content', 'snippet', 'status', 'category','relative_url', 'absolute_url', 'created_at', 'published_at'] 
+        fields = ['id', 'author', 'image', 'title', 'content', 'snippet', 'status', 'category','relative_url', 'absolute_url', 'created_at', 'published_at'] 
     
     def get_absolute_url(self, obj):
         request = self.context.get('request')
@@ -38,5 +38,5 @@ class PostSerializer(serializers.ModelSerializer):
         else:
             rep.pop('content', None)
        
-        rep['category'] = CategorySerializer(instance.category).data 
+        rep['category'] = CategorySerializer(instance.category, context={'request':request}).data 
         return rep
