@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from ...models import Post, Category
 from django.urls import reverse
+from accounts.models import Profile
 
 
 # class PostSerializer(serializers.Serializer):
@@ -21,6 +22,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'author', 'image', 'title', 'content', 'snippet', 'status', 'category','relative_url', 'absolute_url', 'created_at', 'published_at'] 
+        read_only_fields = ['author'] 
     
     def get_absolute_url(self, obj):
         request = self.context.get('request')
@@ -40,3 +42,7 @@ class PostSerializer(serializers.ModelSerializer):
        
         rep['category'] = CategorySerializer(instance.category, context={'request':request}).data 
         return rep
+    
+    def create(self, validated_data):
+        validated_data['author'] = Profile.objects.get(user__id = self.context.get('request').user.id)
+        return super().create(validated_data)
