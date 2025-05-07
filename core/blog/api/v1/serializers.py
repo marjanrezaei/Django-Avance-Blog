@@ -29,6 +29,11 @@ class PostSerializer(serializers.ModelSerializer):
         return reverse('blog:api-v1:post-detail', kwargs={'pk': obj.pk})
 
     def to_representation(self, instance):
+        request = self.context.get('request') 
         rep = super().to_representation(instance)
-        rep['category'] = CategorySerializer(instance.category).data
+        rep['state']= 'list'
+        if request.parser_context.get('kwargs').get('pk'):
+            rep['state']='single'
+       
+        rep['category'] = CategorySerializer(instance.category).data 
         return rep
