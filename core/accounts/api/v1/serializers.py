@@ -23,5 +23,5 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
         
     def create(self, validated_data):
-        validated_data.pop('password1')
+        validated_data.pop('password1', None) # remove password1 from validated_data
         return User.objects.create_user(**validated_data) # create_user is a method in the User model that creates a user with the given email and password 
