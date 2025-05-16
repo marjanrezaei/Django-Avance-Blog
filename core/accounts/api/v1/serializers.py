@@ -90,17 +90,16 @@ class ChangePasswordSerializer(serializers.Serializer):
     Serializer for changing password.
     """
     model = User
-    old_password = serializers.CharField(required=True, write_only=True)
-    new_password = serializers.CharField(required=True, write_only=True)
-    new_password1 = serializers.CharField(required=True, write_only=True)
-    
+
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    new_password1 = serializers.CharField(required=True)
+
     def validate(self, attrs):
-        if attrs.get('new_password') != attrs.get('new_password1'):
-            raise serializers.ValidationError("Passwords do not match")
-        
-        try:
-            validate_password(attrs.get('new_password'))
-        except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"password": list(e.messages)})
-        
+        if attrs["new_password"] != attrs["new_password1"]:
+            raise serializers.ValidationError(
+                {"details": "Passwords does not match"}
+            )
         return super().validate(attrs)
+    
+    
