@@ -1,5 +1,5 @@
 from rest_framework import serializers
-# from ...models import User
+from ...models import Profile
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
@@ -101,5 +101,20 @@ class ChangePasswordSerializer(serializers.Serializer):
                 {"details": "Passwords does not match"}
             )
         return super().validate(attrs)
+ 
     
-    
+class ProfileSerializer(serializers.ModelSerializer):
+    """
+    Profile serializer to manage extra user info
+    """
+    email = serializers.EmailField(source='user.email', read_only=True)
+    class Meta:
+        model = Profile
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "image",
+            "description",
+        ]
