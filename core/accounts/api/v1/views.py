@@ -167,3 +167,28 @@ class ActivationApiView(APIView):
         user_obj.save()
         
         return Response({"success": "Account activated successfully"}, status=status.HTTP_200_OK)
+    
+    
+    
+class ResendActivationApiView(APIView):
+    """
+    API view to resend activation email.
+    """
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user_obj = get_object_or_404(User, email=email)
+        if user_obj.is_verified:
+            return Response({"error": "Account already activated"}, status=status.HTTP_400_BAD_REQUEST)     
+        
+        token = self.get_tokens_for_user(user_obj)
+        email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'marjan@gmail.com', to=[email])
+        EmailThread(email_obj).start()
+
+        return Response({"success": "Activation email resent"}, status=status.HTTP_200_OK)
+    
+    def get_tokens_for_user(self, user):                
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token),
