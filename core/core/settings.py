@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework_simplejwt',
     'mail_templated',
+    # 'djoser',
     
 ]
 
