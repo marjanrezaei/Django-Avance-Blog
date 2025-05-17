@@ -12,7 +12,8 @@ from django.core.mail import send_mail
 from mail_templated import EmailMessage
 from .utils import EmailThread
 from rest_framework_simplejwt.tokens import RefreshToken
-
+import jwt
+from django.conf import settings
 
 
 
@@ -150,15 +151,19 @@ class TestEmailSend(generics.GenericAPIView):
 class ActivationApiView(APIView):
     """
     API view to activate user account.
-    """
-    def post(self, request, *args, **kwargs):
-        token = request.data.get("token")
-        # Decode the token to get the user ID
-        # object user
-        # is_verified = True
+    """   
+    def get(self, request, token, *args, **kwargs):
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = token.get('user_id')
+        except jwt.ExpiredSignatureError:
+            return Response({"error": "Activation link expired"}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.InvalidSignatureError:
+            return Response({"error": "Invalid activation link"}, status=status.HTTP_400_BAD_REQUEST) 
+        user_obj = User.objects.get(id=user_id)
+        if user_obj.is_verified:
+            return Response({"error": "Account already activated"}, status=status.HTTP_400_BAD_REQUEST)     
+        user_obj.is_verified = True
+        user_obj.save()
         
-        # if token not valid
-        
-        # valid response ok
-        
-        return Response(token)
+        return Response({"success": "Account activated successfully"}, status=status.HTTP_200_OK)
