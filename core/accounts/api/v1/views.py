@@ -170,25 +170,21 @@ class ActivationApiView(APIView):
     
     
     
-class ResendActivationApiView(APIView):
+class ResendActivationApiView(generics.GenericAPIView):
     """
     API view to resend activation email.
     """
-    def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        if not email:
-            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user_obj = get_object_or_404(User, email=email)
-        if user_obj.is_verified:
-            return Response({"error": "Account already activated"}, status=status.HTTP_400_BAD_REQUEST)     
-        
-        token = self.get_tokens_for_user(user_obj)
-        email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'marjan@gmail.com', to=[email])
-        EmailThread(email_obj).start()
+    serializer_class = ResendActivationSerializer
 
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_obj = serializer.validated_data['user']
+        token = self.get_tokens_for_user(user_obj)
+        email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'marjan@gmail.com', to=[user_obj.email])
+        EmailThread(email_obj).start()
         return Response({"success": "Activation email resent"}, status=status.HTTP_200_OK)
-    
-    def get_tokens_for_user(self, user):                
+
+    def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token),

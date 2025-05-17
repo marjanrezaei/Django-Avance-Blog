@@ -88,8 +88,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         validated_data['email'] = self.user.email
         validated_data['user_id'] = self.user.id
         return validated_data
-    
-
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -125,3 +123,23 @@ class ProfileSerializer(serializers.ModelSerializer):
             "image",
             "description",
         ]
+        
+        
+class ResendActivationSerializer(serializers.Serializer):
+    """
+    Serializer for resending activation email.
+    """
+    email = serializers.EmailField(required=True)
+    
+    def validate(self, attrs):
+        email = attrs.get('email')
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist.")
+        
+        if user_obj.is_verified:
+            raise serializers.ValidationError("User is already verified.")
+
+        attrs['user'] = user_obj
+        return super().validate(attrs)
