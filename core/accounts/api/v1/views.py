@@ -17,8 +17,6 @@ from django.conf import settings
 
 
 
-
-
 class RegistrationApiView(generics.GenericAPIView):
     """
     API view to register a new user.
@@ -34,20 +32,16 @@ class RegistrationApiView(generics.GenericAPIView):
                 "email": email,
             }
             user_obj = get_object_or_404(User, email=email)
-            token = self.get_tokens_for_user(user_obj)
+            token = self.get_time_limited_token_for_user(user_obj)
             email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'marjan@gmail.com', to=[email])
             EmailThread(email_obj).start()
-        
+         
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
   
-    
-    def get_tokens_for_user(self, user):
+    def get_time_limited_token_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-
-        return str(refresh.access_token),
-        
-    
+        return str(refresh.access_token)
 
 class CustomObtainAuthToken(ObtainAuthToken):
     """
@@ -136,16 +130,15 @@ class TestEmailSend(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         self.email = 'rezaei.marjann@gmail.com'
         user_obj = get_object_or_404(User, email=self.email)
-        token = self.get_tokens_for_user(user_obj)
+        token = self.get_time_limited_token_for_user(user_obj)
         email_obj = EmailMessage('email/hello.tpl', {'token': token}, 'marjan@gmail.com', to=[self.email])
         EmailThread(email_obj).start()
         
         return Response("test email sent")
     
-    def get_tokens_for_user(self, user):
+    def get_time_limited_token_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-
-        return str(refresh.access_token),
+        return str(refresh.access_token)
         
         
 class ActivationApiView(APIView):
@@ -180,11 +173,56 @@ class ResendActivationApiView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user_obj = serializer.validated_data['user']
-        token = self.get_tokens_for_user(user_obj)
+        token = self.get_time_limited_token_for_user(user_obj)
         email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'marjan@gmail.com', to=[user_obj.email])
         EmailThread(email_obj).start()
         return Response({"success": "Activation email resent"}, status=status.HTTP_200_OK)
 
-    def get_tokens_for_user(self, user):
+    def get_time_limited_token_for_user(self, user):
         refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token),
+        return str(refresh.access_token)
+
+
+class ResetPasswordApiView(generics.GenericAPIView):
+    """
+    API view to reset password.
+    """
+    serializer_class = ResetPasswordSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_obj = serializer.validated_data['user']
+        token = self.get_time_limited_token_for_user(user_obj)
+        email_obj = EmailMessage('email/reset_password_email.tpl', {'token': token}, 'marjan@gmail.com', to=[user_obj.email])
+        EmailThread(email_obj).start()
+        return Response({"success": "Reset password email sent"}, status=status.HTTP_200_OK)
+
+    def get_time_limited_token_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        # This is a JWT access token, valid for a short time (default 5 minutes)
+        return str(refresh.access_token)
+
+
+class ResetPasswordConfirmApiView(generics.GenericAPIView):
+    """
+    API view to confirm reset password.
+    """
+    serializer_class = ResetPasswordConfirmSerializer
+
+    def post(self, request, token, *args, **kwargs):
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = token.get('user_id')
+        except jwt.ExpiredSignatureError:
+            return Response({"error": "Reset password link expired"}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.InvalidSignatureError:
+            return Response({"error": "Invalid reset password link"}, status=status.HTTP_400_BAD_REQUEST) 
+        user_obj = User.objects.get(id=user_id)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_obj.set_password(serializer.validated_data['new_password'])
+        user_obj.save()
+        
+        return Response({"success": "Password reset successfully"}, status=status.HTTP_200_OK)
+ 

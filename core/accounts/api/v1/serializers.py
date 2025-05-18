@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+ 
 User = get_user_model()
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -19,7 +20,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
     def validate(self, attrs):
         if attrs.get('password') != attrs.get('password1'):
-            raise serializers.ValidationError("Passwords do not match")
+            raise serializers.ValidationError("Passwords does not match")
         
         try:
             validate_password(attrs.get('password'))
@@ -143,3 +144,40 @@ class ResendActivationSerializer(serializers.Serializer):
 
         attrs['user'] = user_obj
         return super().validate(attrs)
+    
+
+class ResetPasswordSerializer(serializers.Serializer):
+    """
+    Serializer for resetting password.
+    """
+    email = serializers.EmailField(required=True)
+    
+    def validate(self, attrs):
+        email = attrs.get('email')
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist.")
+
+        attrs['user'] = user_obj
+        return super().validate(attrs)
+    
+    
+class ResetPasswordConfirmSerializer(serializers.Serializer):
+    """
+    Serializer for resetting password.
+    """
+    new_password = serializers.CharField(required=True)
+    new_password1 = serializers.CharField(required=True)
+    
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["new_password1"]:
+            raise serializers.ValidationError("Passwords does not match")
+        
+        try:
+            validate_password(attrs.get('new_password'))
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({"new_password": list(e.messages)})
+        
+        return super().validate(attrs)
+    
