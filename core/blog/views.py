@@ -11,7 +11,10 @@ from django.views.generic import (
 )
 from .models import Post
 from .form import PostForm
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 
 
 # Create your views here.

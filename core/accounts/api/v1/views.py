@@ -63,7 +63,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key, "user_id": user.pk, "email": user.email})
+        return Response(
+            {"token": token.key, "user_id": user.pk, "email": user.email}
+        )
 
 
 class CustomDiscardAuthToken(APIView):
@@ -104,7 +106,9 @@ class ChangePasswordApiView(mixins.UpdateModelMixin, generics.GenericAPIView):
 
         if serializer.is_valid():
             # Check old password
-            if not self.object.check_password(serializer.data.get("old_password")):
+            if not self.object.check_password(
+                serializer.data.get("old_password")
+            ):
                 return Response(
                     {"old_password": ["Wrong password."]},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -143,7 +147,10 @@ class TestEmailSend(generics.GenericAPIView):
         user_obj = get_object_or_404(User, email=self.email)
         token = self.get_time_limited_token_for_user(user_obj)
         email_obj = EmailMessage(
-            "email/hello.tpl", {"token": token}, "marjan@gmail.com", to=[self.email]
+            "email/hello.tpl",
+            {"token": token},
+            "marjan@gmail.com",
+            to=[self.email],
         )
         EmailThread(email_obj).start()
 
@@ -161,15 +168,19 @@ class ActivationApiView(APIView):
 
     def get(self, request, token, *args, **kwargs):
         try:
-            token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            token = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=["HS256"]
+            )
             user_id = token.get("user_id")
         except jwt.ExpiredSignatureError:
             return Response(
-                {"error": "Activation link expired"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Activation link expired"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except jwt.InvalidSignatureError:
             return Response(
-                {"error": "Invalid activation link"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Invalid activation link"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         user_obj = User.objects.get(id=user_id)
         if user_obj.is_verified:
@@ -181,7 +192,8 @@ class ActivationApiView(APIView):
         user_obj.save()
 
         return Response(
-            {"success": "Account activated successfully"}, status=status.HTTP_200_OK
+            {"success": "Account activated successfully"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -233,7 +245,8 @@ class ResetPasswordApiView(generics.GenericAPIView):
         )
         EmailThread(email_obj).start()
         return Response(
-            {"success": "Reset password email sent"}, status=status.HTTP_200_OK
+            {"success": "Reset password email sent"},
+            status=status.HTTP_200_OK,
         )
 
     def get_time_limited_token_for_user(self, user):
@@ -251,7 +264,9 @@ class ResetPasswordConfirmApiView(generics.GenericAPIView):
 
     def post(self, request, token, *args, **kwargs):
         try:
-            token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            token = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=["HS256"]
+            )
             user_id = token.get("user_id")
         except jwt.ExpiredSignatureError:
             return Response(
@@ -270,5 +285,6 @@ class ResetPasswordConfirmApiView(generics.GenericAPIView):
         user_obj.save()
 
         return Response(
-            {"success": "Password reset successfully"}, status=status.HTTP_200_OK
+            {"success": "Password reset successfully"},
+            status=status.HTTP_200_OK,
         )

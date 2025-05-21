@@ -30,7 +30,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data):
-        validated_data.pop("password1", None)  # remove password1 from validated_data
+        validated_data.pop(
+            "password1", None
+        )  # remove password1 from validated_data
         return User.objects.create_user(
             **validated_data
         )  # create_user is a method in the User model that creates a user with the given email and password
@@ -56,7 +58,9 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         if email and password:
             user = authenticate(
-                request=self.context.get("request"), email=email, password=password
+                request=self.context.get("request"),
+                email=email,
+                password=password,
             )
 
             # The authenticate call simply returns None for is_active=False
@@ -101,7 +105,9 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         if attrs["new_password"] != attrs["new_password1"]:
-            raise serializers.ValidationError({"details": "Passwords does not match"})
+            raise serializers.ValidationError(
+                {"details": "Passwords does not match"}
+            )
         return super().validate(attrs)
 
 
@@ -136,7 +142,9 @@ class ResendActivationSerializer(serializers.Serializer):
         try:
             user_obj = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError("User with this email does not exist.")
+            raise serializers.ValidationError(
+                "User with this email does not exist."
+            )
 
         if user_obj.is_verified:
             raise serializers.ValidationError("User is already verified.")
@@ -157,7 +165,9 @@ class ResetPasswordSerializer(serializers.Serializer):
         try:
             user_obj = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError("User with this email does not exist.")
+            raise serializers.ValidationError(
+                "User with this email does not exist."
+            )
 
         attrs["user"] = user_obj
         return super().validate(attrs)
@@ -178,6 +188,8 @@ class ResetPasswordConfirmSerializer(serializers.Serializer):
         try:
             validate_password(attrs.get("new_password"))
         except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"new_password": list(e.messages)})
+            raise serializers.ValidationError(
+                {"new_password": list(e.messages)}
+            )
 
         return super().validate(attrs)
