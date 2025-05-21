@@ -1,4 +1,3 @@
-
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from .serializers import PostSerializer, CategorySerializer
@@ -14,7 +13,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .paginations import DefaultPagination
 from .filters import PostFilter
 
-'''
+"""
 from rest_framework.decorators import api_view, permission_classes
  @api_view(['GET','POST'])
 @permission_classes([IsAuthenticated])
@@ -46,9 +45,9 @@ def postDetail(request, id):
         post.delete()
         return Response({'detail':'item removed successfully'}, status=204)
         
-'''
-        
-    
+"""
+
+
 '''
 class PostList(APIView):
     """getting a list of posts and creating new posts"""
@@ -67,10 +66,10 @@ class PostList(APIView):
         serializer.save()
         return Response(serializer.data)
 '''
-    
+
 # class PostList(ListCreateAPIView):
 #     """getting a list of posts and creating new posts"""
-#     permission_classes = [IsAuthenticated] 
+#     permission_classes = [IsAuthenticated]
 #     serializer_class = PostSerializer # show html form for create new post
 #     queryset = Post.objects.filter(status=True)
 
@@ -104,27 +103,26 @@ class PostDetail(APIView):
 
 # class PostDetail(RetrieveUpdateDestroyAPIView):
 #     """ Getting detail of the post and edit plus removing it. """
-#     permission_classes = [IsAuthenticated] 
+#     permission_classes = [IsAuthenticated]
 #     serializer_class = PostSerializer
 #     queryset = Post.objects.filter(status=True)
-    
+
 
 # Example for viewsets in CBV
 
+
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly] 
-    serializer_class = PostSerializer 
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    search_fields = ['title', 'content']
-    ordering_fields = ['published_at']
+    search_fields = ["title", "content"]
+    ordering_fields = ["published_at"]
     pagination_class = DefaultPagination
     filterset_class = PostFilter
-    
-   
-   
+
+
 class CategoryModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly] 
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
-    
