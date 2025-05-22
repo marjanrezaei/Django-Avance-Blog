@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
 )
 from .models import Post
-from .form import PostForm
+from .forms import PostForm
 
 
 class IndexView(TemplateView):
