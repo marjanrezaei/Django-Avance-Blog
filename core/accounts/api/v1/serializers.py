@@ -1,12 +1,11 @@
 from rest_framework import serializers
-from ...models import Profile
-from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from django.contrib.auth import get_user_model
+from ...models import Profile
 
 User = get_user_model()
 
@@ -21,26 +20,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs.get("password") != attrs.get("password1"):
             raise serializers.ValidationError("Passwords does not match")
-
         try:
             validate_password(attrs.get("password"))
         except exceptions.ValidationError as e:
             raise serializers.ValidationError({"password": list(e.messages)})
-
         return super().validate(attrs)
 
     def create(self, validated_data):
-        validated_data.pop(
-            "password1", None
-        )  # remove password1 from validated_data
-        return User.objects.create_user(
-            **validated_data
-        )  # create_user is a method in the User model that creates a user with the given email and password
+        # remove password1 from validated_data
+        validated_data.pop("password1", None)
+        # creates a user with the given email and password
+        return User.objects.create_user(**validated_data)
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):
     """
-    override the default AuthTokenSerializer to use email instead of username
+    override AuthTokenSerializer to use email instead of username.
     """
 
     email = serializers.EmailField(label=_("Email"), write_only=True)
@@ -55,14 +50,12 @@ class CustomAuthTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
-
         if email and password:
             user = authenticate(
                 request=self.context.get("request"),
                 email=email,
                 password=password,
             )
-
             # The authenticate call simply returns None for is_active=False
             # users. (Assuming the default ModelBackend authentication
             # backend.)
@@ -75,7 +68,6 @@ class CustomAuthTokenSerializer(serializers.Serializer):
         else:
             msg = _('Must include "email" and "password".')
             raise serializers.ValidationError(msg, code="authorization")
-
         attrs["user"] = user
         return attrs
 
@@ -145,10 +137,8 @@ class ResendActivationSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "User with this email does not exist."
             )
-
         if user_obj.is_verified:
             raise serializers.ValidationError("User is already verified.")
-
         attrs["user"] = user_obj
         return super().validate(attrs)
 
@@ -168,7 +158,6 @@ class ResetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "User with this email does not exist."
             )
-
         attrs["user"] = user_obj
         return super().validate(attrs)
 
@@ -184,12 +173,10 @@ class ResetPasswordConfirmSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs["new_password"] != attrs["new_password1"]:
             raise serializers.ValidationError("Passwords does not match")
-
         try:
             validate_password(attrs.get("new_password"))
         except exceptions.ValidationError as e:
             raise serializers.ValidationError(
                 {"new_password": list(e.messages)}
             )
-
         return super().validate(attrs)

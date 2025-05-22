@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import RedirectView
 
 
 app_name = "blog"
