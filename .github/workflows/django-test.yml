@@ -14,8 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build Docker containers
-      run: docker compose build --no-cache
     - name: Setup Docker-Compose
       run: docker compose up -d
     - name: Run Tests
