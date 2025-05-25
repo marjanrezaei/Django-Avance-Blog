@@ -40,3 +40,14 @@ class TestPostApi:
         }
         response = api_client.post(url, data)
         assert response.status_code == 201
+
+    def test_create_post_invalid_data_response_400_status(self, api_client, create_user):
+        api_client.force_authenticate(user=create_user)        
+        # Create a post
+        url = reverse("blog:api-v1:post-list")
+        data = {
+            "title": "Test Post",
+            "content": "This is a test post.",
+        }
+        response = api_client.post(url, data)
+        assert response.status_code == 400
