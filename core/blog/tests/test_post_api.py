@@ -4,16 +4,19 @@ import pytest
 from datetime import datetime
 
 
+@pytest.fixture
+def api_client():
+    return APIClient()
+
 @pytest.mark.django_db
 class TestPostApi:
-    client = APIClient()
-    
-    def test_get_post_response_200(self, django_user_model):
+
+    def test_get_post_response_200(self, api_client):
         url = reverse("blog:api-v1:post-list")
-        response = self.client.get(url)
+        response = api_client.get(url)
         assert response.status_code == 401
-     
-    def test_create_post_response_401_status(self):
+
+    def test_create_post_response_401_status(self, api_client):
         url = reverse("blog:api-v1:post-list")
         data = {
             "title": "Test Post",
@@ -21,5 +24,5 @@ class TestPostApi:
             "status": True,
             "published_at": datetime.now(),
         }
-        response = self.client.post(url, data)
+        response = api_client.post(url, data)
         assert response.status_code == 401
