@@ -32,10 +32,15 @@ class TestBlogView(TestCase):
         self.assertTemplateUsed(response, template_name="index.html")
         
     def test_blog_post_detail_lagged_in_response(self):
-       pass
+        self.client.force_login(self.user)
+        # Log in the user
+        url = reverse("blog:post-detail", kwargs={"pk": self.post.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200) # successful response
    
    # for user not logged in
     def test_blog_post_detail_anonymous_response(self):
         url = reverse("blog:post-detail", kwargs={"pk": self.post.id})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302) # redirect to login page
+        
