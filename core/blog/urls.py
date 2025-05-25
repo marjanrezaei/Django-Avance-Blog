@@ -1,12 +1,13 @@
 from django.urls import path, include
 from . import views
+
 # from django.views.generic import RedirectView
 
 
 app_name = "blog"
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
+    path("", views.IndexView.as_view(), name="index"),
     # path("cbv-index", views.IndexView.as_view(), name="cbv-index"),
     # path(
     #     "go-to-index",

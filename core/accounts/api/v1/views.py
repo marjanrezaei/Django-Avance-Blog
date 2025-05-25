@@ -29,6 +29,7 @@ class RegistrationApiView(generics.GenericAPIView):
     """
     API view to register a new user.
     """
+
     serializer_class = RegistrationSerializer
 
     def post(self, request, *args, **kwargs):
@@ -60,6 +61,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
     """
     Custom view to handle token authentication.
     """
+
     serializer_class = CustomAuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
@@ -78,6 +80,7 @@ class CustomDiscardAuthToken(APIView):
     """
     Custom view to handle token discard.
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -89,14 +92,15 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     """
     Custom view to handle JWT token authentication.
     """
+
     serializer_class = CustomTokenObtainPairSerializer
 
 
-class ChangePasswordApiView(
-        mixins.UpdateModelMixin, generics.GenericAPIView):
+class ChangePasswordApiView(mixins.UpdateModelMixin, generics.GenericAPIView):
     """
     API view to change password.
     """
+
     serializer_class = ChangePasswordSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -130,6 +134,7 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
     """
     API view to retrieve and update user profile.
     """
+
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
@@ -164,6 +169,7 @@ class ActivationApiView(APIView):
     """
     API view to activate user account.
     """
+
     def get(self, request, token, *args, **kwargs):
         try:
             token = jwt.decode(
@@ -198,6 +204,7 @@ class ResendActivationApiView(generics.GenericAPIView):
     """
     API view to resend activation email.
     """
+
     serializer_class = ResendActivationSerializer
 
     def post(self, request, *args, **kwargs):
@@ -225,6 +232,7 @@ class ResetPasswordApiView(generics.GenericAPIView):
     """
     API view to reset password.
     """
+
     serializer_class = ResetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
@@ -254,6 +262,7 @@ class ResetPasswordConfirmApiView(generics.GenericAPIView):
     """
     API view to confirm reset password.
     """
+
     serializer_class = ResetPasswordConfirmSerializer
 
     def post(self, request, token, *args, **kwargs):

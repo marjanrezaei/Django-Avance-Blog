@@ -9,13 +9,16 @@ from accounts.models import User
 def api_client():
     return APIClient()
 
+
 @pytest.fixture
 def create_user(db):
     user = User.objects.create_user(
-        email='testuser@example.com',
-        password='testpassword', is_verified=True
+        email="testuser@example.com",
+        password="testpassword",
+        is_verified=True,
     )
     return user
+
 
 @pytest.mark.django_db
 class TestPostApi:
@@ -29,7 +32,7 @@ class TestPostApi:
         # login the user
         api_client.force_login(user=create_user)
         # Authenticate the user
-        api_client.force_authenticate(user=create_user)        
+        api_client.force_authenticate(user=create_user)
         # Create a post
         url = reverse("blog:api-v1:post-list")
         data = {
@@ -41,8 +44,10 @@ class TestPostApi:
         response = api_client.post(url, data)
         assert response.status_code == 201
 
-    def test_create_post_invalid_data_response_400_status(self, api_client, create_user):
-        api_client.force_authenticate(user=create_user)        
+    def test_create_post_invalid_data_response_400_status(
+        self, api_client, create_user
+    ):
+        api_client.force_authenticate(user=create_user)
         # Create a post
         url = reverse("blog:api-v1:post-list")
         data = {

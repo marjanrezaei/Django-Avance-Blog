@@ -19,6 +19,7 @@ class IndexView(TemplateView):
     """
     a class based view to show index page
     """
+
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
@@ -32,12 +33,11 @@ class RedirectToGoogle(RedirectView):
     """
     a class based view to redirect to google
     """
+
     url = "https://www.google.com"
 
 
-class PostListView(
-    PermissionRequiredMixin,
-        LoginRequiredMixin, ListView):
+class PostListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     permission_required = "blog.view_post"
     model = Post
     # queryset = Post.objects.all()
