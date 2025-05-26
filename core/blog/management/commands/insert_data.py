@@ -2,7 +2,21 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 from accounts.models import User, Profile
 from blog.models import Post, Category
+import random
+from datetime import datetime
 
+category_list = [
+    "Technology",
+    "Health",
+    "Travel",
+    "Food",
+    "Lifestyle",
+    "Education",
+    "Finance",
+    "Entertainment",
+    "Sports",
+    "Fashion"
+]
 
 class Command(BaseCommand):
     help = "Inserting dummy data"
@@ -22,4 +36,19 @@ class Command(BaseCommand):
         profile.last_name = self.fake.last_name()
         profile.description = self.fake.paragraph(nb_sentences=3)
         profile.save()
-        
+    
+        for category_name in category_list:
+            Category.objects.get_or_create(name=category_name)
+            
+        for _ in range(10):
+            Post.objects.create(
+                author=profile,
+                title=self.fake.sentence(nb_words=6),
+                content=self.fake.paragraph(nb_sentences=5),
+                status=random.choice([True, False]),
+                category=Category.objects.get(name=random.choice(category_list)),
+                published_at=datetime.now(),
+            )
+         
+    
+          
