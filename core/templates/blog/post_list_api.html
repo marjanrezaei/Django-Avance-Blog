@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <h1>my blog</h1>
+
+    <div class="result"></div>
+
+    <script>
+        $.get("/blog/api/v1/post/", function (data) {
+            $(".result").html(data);
+            alert("Load was performed.");
+            wrapper = $(".result");
+            for (post of data.results) {
+                wrapper.append(
+                    `<div>
+                    <a href="${post.absolute_url}"><h2>${post.title}</h2></a>
+                    </div>`
+                );
+            }
+            
+        });
+    </script>
+
+</body>
+</html>
+
+
