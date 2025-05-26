@@ -58,12 +58,14 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework_simplejwt",
     "mail_templated",
-    # 'djoser',
+    "djoser",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -177,3 +179,6 @@ EMAIL_USE_TLS = False
 EMAIL_HOST_USER = ""  # SMTP server username
 EMAIL_HOST_PASSWORD = ""  # SMTP server password
 EMAIL_USE_SSL = False
+
+
+CORS_ALLOW_ALL_ORIGINS = True
