@@ -14,7 +14,7 @@ from pathlib import Path
 from decouple import config
 
 # Access environment variables
-SECRET_KEY = config("SECRET_KEY", default="test")
+SECRET= config("SECRET_KEY", default="test")
 DEBUG = config("DEBUG", cast=bool, default=True)
 
 DATABASES = {
