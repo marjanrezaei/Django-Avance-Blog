@@ -2,6 +2,7 @@
 services:
   redis:
     image: redis:latest
+    restart: always
     container_name: redis
     ports:
       - "6379:6379"
@@ -9,8 +10,7 @@ services:
     
   backend:
     container_name: backend
-    build:
-      context: ./core
+    build: ./core
     ports:
       - "7000:8000"
     volumes:
@@ -18,7 +18,18 @@ services:
     env_file:
       - .env
     command: python manage.py runserver 0.0.0.0:8000
-    
+    depends_on:
+      - redis
+
+  worker:
+    build: ./core
+    command: celery -A core worker -l INFO
+    volumes:
+      - ./core:/app
+    depends_on:
+      - redis
+      - backend
+      
   smtp4dev:
     image: rnwood/smtp4dev:v3
     restart: always
