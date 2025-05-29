@@ -13,6 +13,7 @@ djangorestframework-simplejwt
 djoser
 django-cors-headers
 
+django-celery-beat
 
 # deployment modules
 
@@ -29,3 +30,4 @@ Faker
 # Background process and cache
 celery
 redis
+django-redis

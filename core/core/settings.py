@@ -16,22 +16,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Access environment variables
-SECRET_KEY = config("SECRET_KEY", default="test")
-DEBUG = config("DEBUG", cast=bool, default=True)
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME", default="database_name"),
-        "USER": config("DB_USER", default="testuser"),
-        "PASSWORD": config("DB_PASSWORD", default="testpassword"),
-        "HOST": config("DB_HOST", default="localhost"),
-        "PORT": config("DB_PORT", default=5432, cast=int),
-    }
-}
-
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -102,13 +86,20 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Access environment variables
+SECRET_KEY = config("SECRET_KEY", default="test")
+DEBUG = config("DEBUG", cast=bool, default=True)
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+       "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        "USER": config("DB_USER", default="testuser"),
+        "PASSWORD": config("DB_PASSWORD", default="testpassword"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default=5432, cast=int),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -188,3 +179,14 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # celery configuration
 CELERY_BROKER_URL = "redis://redis:6379/1"
+
+#caching configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+} 
