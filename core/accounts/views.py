@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-
+from django.http import HttpResponse, JsonResponse
+import requests
 from .tasks import sendEmail 
 
 def send_email(request):
@@ -10,3 +10,7 @@ def send_email(request):
     
     # Return a simple response
     return HttpResponse("Email sent successfully!")
+
+def test(request):
+    response = requests.get("https://e36589a2-9f85-4ac0-8dcf-f7b98135d9e9.mock.pstmn.io/test/delay/5")
+    return JsonResponse(response.json())
