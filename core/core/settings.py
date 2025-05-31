@@ -91,11 +91,11 @@ DEBUG = config("DEBUG", cast=bool, default=True)
 
 DATABASES = {
     "default": {
-       "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-        "USER": config("DB_USER", default="testuser"),
-        "PASSWORD": config("DB_PASSWORD", default="testpassword"),
-        "HOST": config("DB_HOST", default="localhost"),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME", default="mydb"),
+        "USER": config("DB_USER", default="myuser"),
+        "PASSWORD": config("DB_PASSWORD", default="mypassword"),
+        "HOST": config("DB_HOST", default="db"),  # 'db' is the Docker service name
         "PORT": config("DB_PORT", default=5432, cast=int),
     }
 }
