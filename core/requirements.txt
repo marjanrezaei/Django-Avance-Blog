@@ -17,6 +17,7 @@ django-celery-beat
 
 # deployment modules
 gunicorn
+psycopg2-binary
 
 # email third party modules
 django-mail-templated

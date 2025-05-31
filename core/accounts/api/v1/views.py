@@ -146,7 +146,7 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
 
 
 class TestEmailSend(generics.GenericAPIView):
-
+    serializer_class = None
     def get(self, request, *args, **kwargs):
         self.email = "rezaei.marjann@gmail.com"
         user_obj = get_object_or_404(User, email=self.email)
