@@ -12,7 +12,7 @@ services:
     container_name: backend
     build: ./core
     ports:
-      - "7000:8000"
+      - "8000:8000"
     volumes:
       - ./core:/app
     env_file:
