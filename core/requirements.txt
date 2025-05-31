@@ -16,6 +16,7 @@ django-cors-headers
 django-celery-beat
 
 # deployment modules
+gunicorn
 
 # email third party modules
 django-mail-templated
