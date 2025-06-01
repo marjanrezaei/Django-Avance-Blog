@@ -17,6 +17,7 @@ django-celery-beat
 
 # deployment modules
 gunicorn
+psycopg2-binary
 
 # database modules
 psycopg2-binary
