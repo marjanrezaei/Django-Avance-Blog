@@ -49,6 +49,32 @@ services:
     depends_on:
       - backend
       - redis
+  
+  celery:
+    build: ./core
+    container_name: celery
+    command: celery -A core worker --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./core:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+
+  celery_beat:
+    build: ./core
+    container_name: celery_beat
+    command: celery -A core beat --loglevel=info
+    depends_on:
+      - celery
+    volumes:
+      - ./core:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
 
 volumes:
   static_volume:
